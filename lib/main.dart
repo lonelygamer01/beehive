@@ -3,8 +3,6 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import 'package:flutter/material.dart';
 
-import 'Header/header_desktop.dart';
-import 'Header/header_mobile.dart';
 
 import 'Title/title_desktop.dart';
 import 'Title/title_mobile.dart';
@@ -21,7 +19,6 @@ import 'Bottom/bottom_mobile.dart';
 import 'Contactinfo/contactinfo_desktop.dart';
 import 'Contactinfo/contactinfo_mobile.dart';
 
-import 'Articles/articles_desktop.dart';
 
 
 void main() {
@@ -46,6 +43,7 @@ class MyApp extends StatelessWidget {
 }
 
 Widget content_desktop = MenuDesktop(); 
+String lang = "EN";
 
 class HelpCenterDesktop extends StatefulWidget {
   const HelpCenterDesktop({super.key});
@@ -62,14 +60,83 @@ class _HelpCenterDesktopState extends State<HelpCenterDesktop> {
     return Column(
       children: <Widget>[
 
-        HeaderDesktop(),
+          Container(
+                height: 70,
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 80),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      child: Row(
+                        children: [
+                          Text("BeeHiveSG", style: TextStyle(color: const Color.fromARGB(167, 255, 153, 0), fontSize: 23, fontWeight: FontWeight.w600)), 
+                          SizedBox(width: 12,),
+                          Text("Help", style: TextStyle(color: Colors.black, fontSize: 23))
+                        ],
+                      )
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextButton(
+                          onPressed: (){
+                            setState(() {
+                              content_desktop = MenuDesktop();
+                            });
+                          },
+                            style: TextButton.styleFrom(
+                              side: BorderSide.none,
+                              padding: EdgeInsets.all(0),
+                              backgroundColor: Colors.transparent
+                              ),
+                          child: Align(alignment: Alignment.center, child: Text("Help Center", style: TextStyle(color: Colors.grey, decoration: TextDecoration.underline, fontSize: 20),),),
+                        ),
+                        SizedBox(width: 20,),
+                        TextButton(
+                          onPressed: (){
+                            setState(() {
+                              content_desktop = ContactInfoDesktop();
+                            });
+                          },
+                            style: TextButton.styleFrom(
+                              side: BorderSide.none,
+                              padding: EdgeInsets.all(0),
+                              backgroundColor: Colors.transparent
+                              ),
+                          child: Align(alignment: Alignment.center, child: Text("Contact Support", style: TextStyle(color: Colors.grey, decoration: TextDecoration.underline, fontSize: 20),),),
+                        ),
+                        SizedBox(width: 20,),
+                        TextButton(
+                          onPressed: (){
+                            if (lang == "EN") {
+                              setState(() {
+                                lang = "HR";
+                              });
+                            }
+                            else {setState(() {
+                              lang = "EN";
+                            });}
+                          },
+                            style: TextButton.styleFrom(
+                              side: BorderSide.none,
+                              padding: EdgeInsets.all(0),
+                              backgroundColor: Colors.transparent
+                              ),
+                          child: Align(alignment: Alignment.center, child: Text(lang, style: TextStyle(color: Colors.grey, decoration: TextDecoration.underline, fontSize: 20),),),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
 
         TitleDesktop(),
 
-        //Ezek a 3 különálló oldalak nincsenek összekötve
-        ContactInfoDesktop(),
-        MenuDesktop(),
-        ArticlesDesktop(),
+
+        content_desktop,
+        //ContactInfoDesktop(),
+        //MenuDesktop(),
 
         ContactSupportDesktop(),
 
@@ -80,8 +147,13 @@ class _HelpCenterDesktopState extends State<HelpCenterDesktop> {
   }
 }
 
+List<String> list = <String>["Help Center", "Contact Support", "EN"];
+String dropdownValue = list.first;
 
+bool menu = true;
+bool contact = false;
 
+Widget content_mobile = MenuMobile();
 
 class HelpCenterMoblie extends StatefulWidget {
   const HelpCenterMoblie({super.key});
@@ -97,15 +169,75 @@ class _HelpCenterMoblieState extends State<HelpCenterMoblie> {
     
     return Column(
       children: <Widget>[
-        
-        HeaderMobile(),
+        Container(
+              height: 70,
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    child: Row(
+                      children: [
+                        Text("BeeHiveSG", style: TextStyle(color: const Color.fromARGB(167, 255, 153, 0), fontSize: 20, fontWeight: FontWeight.w600)), 
+                        SizedBox(width: 12,),
+                        Text("Help", style: TextStyle(color: Colors.black, fontSize: 20))
+                      ],
+                    )
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButton<String>(
+                            value: dropdownValue,
+                            icon: const Icon(Icons.arrow_downward),
+                            elevation: 5,
+                            style: const TextStyle(color: Colors.grey),
+                            onChanged: (String? value) {
+                              // This is called when the user selects an item.
+                              setState(() {
+                                if (value == "EN" || value == "HR") {
+                                  if (value == "EN") {
+                                      setState(() {
+                                      list.last = "HR";
+                                    });
+                                  } else {
+                                      setState(() {
+                                        list.last = "EN";
+                                      });
+                                  }
+                                }                                           
+                                else {
+                                  dropdownValue = value!;
+                                  if (value == "Help Center") {
+                                      setState(() {
+                                        content_mobile = MenuMobile();
+                                    });
+                                  } else {
+                                      setState(() {
+                                        content_mobile = ContactInfoMobile();
+                                      });
+                                  }                          
+                                }
+                              });
+                            },
+                            items: list.map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          )
+                    ],
+                  ),
+                ],
+              ),
+            ),
 
         TitleMobile(),
 
-        //Ezek a 2 különálló oldalak nincsenek összekötve
-        MenuMobile(),
-        ContactInfoMobile(),
-            
+        content_mobile,
+          
         ContactSupportMobile(),
 
         BottomMobile(),
